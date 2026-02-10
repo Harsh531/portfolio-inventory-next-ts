@@ -46,6 +46,9 @@ export async function POST(req: Request) {
     return response
   } catch (error) {
     console.error("🔥 Login API error:", error)
-    return NextResponse.json({ error: "Invalid request body" }, { status: 400 })
+    if (error instanceof Error) {
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
+    return NextResponse.json({ error: "Invalid request body" }, { status: 500 })
   }
 }
