@@ -11,7 +11,7 @@ export default async function HomePage() {
     )
 
     if (!res.ok) {
-      console.error("Failed to fetch profile:", res.status, res.statusText)
+      // console.error("Failed to fetch profile:", res.status, res.statusText)
       return <div>Error fetching profile</div>
     }
 
