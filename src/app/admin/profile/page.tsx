@@ -4,8 +4,10 @@ import { useEffect, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
+import { useApi } from "@/lib/useApi"
 
 export default function AdminProfilePage() {
+    const { getApiUrl } = useApi()
     const [profile, setProfile] = useState<any>({
         name: "",
         title: "",
@@ -15,8 +17,11 @@ export default function AdminProfilePage() {
     })
 
     useEffect(() => {
-        fetch("/api/profile")
-            .then(res => res.json())
+        fetch(getApiUrl("/api/profile"))
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP ${res.status}`)
+                return res.json()
+            })
             .then(data => {
                 if (data) {
                     setProfile({
@@ -29,11 +34,11 @@ export default function AdminProfilePage() {
                 }
             })
             .catch(error => console.error("Failed to fetch profile:", error))
-    }, [])
+    }, [getApiUrl])
 
     async function save() {
         try {
-            const res = await fetch("/api/profile", {
+            const res = await fetch(getApiUrl("/api/profile"), {
                 method: "POST",
                 body: JSON.stringify({
                     ...profile,

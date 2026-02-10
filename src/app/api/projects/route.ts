@@ -11,13 +11,17 @@ export async function GET() {
 
 export async function POST(req: Request) {
   await connectDB()
-  const body = await req.json()
+  try {
+    const body = await req.json()
 
-  const parsed = projectSchema.safeParse(body)
-  if (!parsed.success) {
-    return NextResponse.json(parsed.error, { status: 400 })
+    const parsed = projectSchema.safeParse(body)
+    if (!parsed.success) {
+      return NextResponse.json(parsed.error, { status: 400 })
+    }
+
+    const project = await Project.create(parsed.data)
+    return NextResponse.json(project)
+  } catch (error) {
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 })
   }
-
-  const project = await Project.create(parsed.data)
-  return NextResponse.json(project)
 }

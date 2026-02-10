@@ -1,21 +1,26 @@
 
+import { getBaseUrl } from "@/lib/config";
+
 export default async function HomePage() {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/profile`,
-    { cache: "no-store" }
-  )
+  const baseUrl = getBaseUrl()
 
-  const profile = await res.json()
+  try {
+    const res = await fetch(
+      `${baseUrl}/api/profile`,
+      { cache: "no-store" }
+    )
 
-  if (!res.ok) {
-    console.error("Failed to fetch profile:", res.status, res.statusText)
-    return <div>Error fetching profile</div>
-  }
+    if (!res.ok) {
+      console.error("Failed to fetch profile:", res.status, res.statusText)
+      return <div>Error fetching profile</div>
+    }
 
-  if (!profile) {
-    console.info("No profile found")
-    return <div>No profile found</div>
-  }
+    const profile = await res.json()
+
+    if (!profile) {
+      console.info("No profile found")
+      return <div>No profile found</div>
+    }
 
   return (
     <main className="max-w-4xl mx-auto p-6 space-y-6">
@@ -47,5 +52,9 @@ export default async function HomePage() {
         </a>
       )}
     </main>
-  )
+    )
+  } catch (error) {
+    console.error("Error loading profile:", error)
+    return <div>Error loading profile</div>
+  }
 }

@@ -5,9 +5,11 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
+import { useApi } from "@/lib/useApi"
 
 export default function NewProjectPage() {
     const router = useRouter();
+    const { getApiUrl } = useApi()
     const [form, setForm] = useState({
         title: "",
         description: "",
@@ -15,7 +17,7 @@ export default function NewProjectPage() {
     })
 
     async function submit() {
-        const res = await fetch("/api/projects", {
+        const res = await fetch(getApiUrl("/api/projects"), {
             method: "POST",
             body: JSON.stringify({
                 ...form,

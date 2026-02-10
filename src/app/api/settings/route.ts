@@ -10,13 +10,17 @@ export async function GET() {
 
 export async function POST(req: Request) {
   await connectDB()
-  const body = await req.json()
+  try {
+    const body = await req.json()
 
-  const settings = await Settings.findOneAndUpdate(
-    {},
-    body,
-    { upsert: true, new: true }
-  )
+    const settings = await Settings.findOneAndUpdate(
+      {},
+      body,
+      { upsert: true, new: true }
+    )
 
-  return NextResponse.json(settings)
+    return NextResponse.json(settings)
+  } catch (error) {
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 })
+  }
 }

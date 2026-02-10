@@ -8,8 +8,17 @@ export default function AdminLayout({
   children: React.ReactNode
 }) {
   async function logout() {
-    await fetch("/api/auth/logout", { method: "POST" })
-    window.location.href = "/login"
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || ""
+      const logoutUrl = baseUrl ? `${baseUrl}/api/auth/logout` : "/api/auth/logout"
+      const res = await fetch(logoutUrl, { method: "POST" })
+      if (res.ok) {
+        window.location.href = "/login"
+      }
+    } catch (error) {
+      console.error("Logout error:", error)
+      window.location.href = "/login"
+    }
   }
 
   return (

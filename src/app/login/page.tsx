@@ -3,17 +3,18 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
-import {useRouter} from "next/navigation"
-
+import { useRouter } from "next/navigation"
+import { useApi } from "@/lib/useApi"
 
 export default function LoginPage() {
     const router = useRouter();
+    const { getApiUrl } = useApi()
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
 
     async function handleLogin() {
-        const res = await fetch("/api/auth/login", {
+        const res = await fetch(getApiUrl("/api/auth/login"), {
             method: "POST",
             body: JSON.stringify({ email, password })
         })

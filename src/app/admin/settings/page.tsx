@@ -3,22 +3,30 @@
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
+import { useApi } from "@/lib/useApi"
 
 export default function SettingsPage() {
+  const { getApiUrl } = useApi()
   const [settings, setSettings] = useState({
     theme: "system",
     portfolioVisible: true
   })
 
   useEffect(() => {
-    fetch("/api/settings")
-      .then(res => res.json())
+    fetch(getApiUrl("/api/settings"))
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Failed to fetch settings: ${res.status}`)
+        }
+        return res.json()
+      })
       .then(data => data && setSettings(data))
-  }, [])
+      .catch(error => console.error("Error fetching settings:", error))
+  }, [getApiUrl])
 
   async function save() {
     try {
-      const res = await fetch("/api/settings", {
+      const res = await fetch(getApiUrl("/api/settings"), {
         method: "POST",
         body: JSON.stringify(settings)
       })

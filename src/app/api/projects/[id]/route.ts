@@ -8,21 +8,25 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   await connectDB()
-  const body = await req.json()
-  const { id } = await params
+  try {
+    const body = await req.json()
+    const { id } = await params
 
-  const parsed = projectSchema.safeParse(body)
-  if (!parsed.success) {
-    return NextResponse.json(parsed.error, { status: 400 })
+    const parsed = projectSchema.safeParse(body)
+    if (!parsed.success) {
+      return NextResponse.json(parsed.error, { status: 400 })
+    }
+
+    const updated = await Project.findByIdAndUpdate(
+      id,
+      parsed.data,
+      { new: true }
+    )
+
+    return NextResponse.json(updated)
+  } catch (error) {
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 })
   }
-
-  const updated = await Project.findByIdAndUpdate(
-    id,
-    parsed.data,
-    { new: true }
-  )
-
-  return NextResponse.json(updated)
 }
 
 export async function DELETE(

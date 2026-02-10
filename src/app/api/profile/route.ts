@@ -11,18 +11,22 @@ export async function GET() {
 
 export async function POST(req: Request) {
   await connectDB()
-  const body = await req.json()
+  try {
+    const body = await req.json()
 
-  const parsed = profileSchema.safeParse(body)
-  if (!parsed.success) {
-    return NextResponse.json(parsed.error, { status: 400 })
+    const parsed = profileSchema.safeParse(body)
+    if (!parsed.success) {
+      return NextResponse.json(parsed.error, { status: 400 })
+    }
+
+    const profile = await Profile.findOneAndUpdate(
+      {},
+      parsed.data,
+      { upsert: true, new: true }
+    )
+
+    return NextResponse.json(profile)
+  } catch (error) {
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 })
   }
-
-  const profile = await Profile.findOneAndUpdate(
-    {},
-    parsed.data,
-    { upsert: true, new: true }
-  )
-
-  return NextResponse.json(profile)
 }

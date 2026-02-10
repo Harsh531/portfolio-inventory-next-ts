@@ -3,12 +3,14 @@
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { useApi } from "@/lib/useApi"
 
 export default function AdminProjectsPage() {
+  const { getApiUrl } = useApi()
   const [projects, setProjects] = useState<any[]>([])
 
   useEffect(() => {
-    fetch("/api/projects")
+    fetch(getApiUrl("/api/projects"))
       .then(res => {
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`)
@@ -20,7 +22,7 @@ export default function AdminProjectsPage() {
         console.error("Failed to fetch projects:", error)
         // Optionally set an error state
       })
-  }, [])
+  }, [getApiUrl])
 
   return (
     <div className="space-y-6">
