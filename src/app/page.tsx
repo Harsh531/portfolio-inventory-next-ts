@@ -12,14 +12,14 @@ export default async function HomePage() {
 
     if (!res.ok) {
       // console.error("Failed to fetch profile:", res.status, res.statusText)
-      return <div>Error fetching profile</div>
+      return <div className="max-w-4xl mx-auto p-6 space-y-6">Error fetching profile {JSON.stringify(res, null, 2)}</div>
     }
 
     const profile = await res.json()
 
     if (!profile) {
       console.info("No profile found")
-      return <div>No profile found</div>
+      return <div className="max-w-4xl mx-auto p-6 space-y-6">No profile found</div>
     }
 
   return (
